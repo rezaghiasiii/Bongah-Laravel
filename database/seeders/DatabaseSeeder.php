@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\Banner;
+use App\Models\Photo;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -16,7 +17,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-         User::factory(10)->create();
-         Banner::factory(10)->create();
+        User::factory(10)->create();
+        Banner::factory(10)->create()->each(function($banner) {
+            $banner->photos()->saveMany(
+                Photo::factory(rand(1,5))->make());
+        });
     }
 }

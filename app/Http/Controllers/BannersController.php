@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Flash;
+use App\Http\Requests\BannerRequest;
 use App\Http\Utilities\Country;
+use App\Models\Banner;
 use Illuminate\Http\Request;
 
 class BannersController extends Controller
@@ -33,9 +36,15 @@ class BannersController extends Controller
      * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(BannerRequest $request)
     {
-        //
+        //store
+        Banner::create($request->all());
+
+        flash()->success("Created !" , "Your banner has been created.");
+
+        //redirect
+        return back();
     }
 
     /**
@@ -44,9 +53,11 @@ class BannersController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($zip,$street)
     {
-        //
+        $banner = Banner::locatedAt($zip,$street)->first();
+
+return view('banners.show',compact('banner'));
     }
 
     /**

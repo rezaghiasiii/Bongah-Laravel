@@ -20,10 +20,10 @@ class BannerFactory extends Factory
             'street' => fake()->streetAddress(),
             'city' => fake()->city(),
             'zip' => fake()->postcode(),
-            'state' => $this->faker->city(),
+            'state' => fake()->city(),
             'country' => fake()->country(),
             'price' => fake()->numberBetween(10000,50000),
-            'description' => fake()->paragraph(3,true)
+            'description' => fake()->paragraphs(3,true)
         ];
     }
 }

@@ -20,7 +20,7 @@ return new class extends Migration
                 ->cascadeOnDelete()
                 ->cascadeOnUpdate();
 
-            $table->string('photo');
+            $table->string('path');
             $table->timestamps();
         });
     }

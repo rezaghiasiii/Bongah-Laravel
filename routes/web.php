@@ -18,4 +18,7 @@ Route::get('/', function () {
     return view('pages.home');
 });
 
+Route::get('{zip}/{street}',[BannersController::class,'show']);
+
 Route::resource('banners', BannersController::class);
+
