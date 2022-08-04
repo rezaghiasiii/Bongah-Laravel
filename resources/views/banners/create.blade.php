@@ -1,19 +1,9 @@
-@extends('layout')
-
-@section('content')
-
-    <h1>Selling your home?</h1>
-
-    <hr>
-
-    <div class="row">
-
-        @include('partials.error')
-
-        <form class="col-md-6" action="{{ route('banners.store') }}" method="post" enctype="multipart/form-data"
-              role="form">
+<x-app-layout>
+    <x-slot name="content">
+        <form class="w-full max-w-lg my-32 mx-auto" action="{{route('banners.store')}}" method="post">
             @include('banners.form')
+            @include('partials.error')
         </form>
+    </x-slot>
+</x-app-layout>
 
-    </div>
-@stop

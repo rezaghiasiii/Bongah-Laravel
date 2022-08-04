@@ -15,10 +15,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('pages.home');
+    return view('welcome');
 });
 
-Route::get('{zip}/{street}',[BannersController::class,'show']);
+require __DIR__.'/auth.php';
 
 Route::resource('banners', BannersController::class);
 
+Route::get('{zip}/{street}', [BannersController::class,'show']);
+Route::post('{zip}/{street}/photos', [BannersController::class,'addPhotos'])->name('store_photo_path');

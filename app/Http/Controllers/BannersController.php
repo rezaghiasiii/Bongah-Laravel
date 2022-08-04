@@ -6,10 +6,17 @@ use App\Http\Flash;
 use App\Http\Requests\BannerRequest;
 use App\Http\Utilities\Country;
 use App\Models\Banner;
+use App\Models\Photo;
 use Illuminate\Http\Request;
 
 class BannersController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth')->except('show');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -17,7 +24,7 @@ class BannersController extends Controller
      */
     public function index()
     {
-        //
+        return view('dashboard');
     }
 
     /**
@@ -41,7 +48,7 @@ class BannersController extends Controller
         //store
         Banner::create($request->all());
 
-        flash()->success("Created !" , "Your banner has been created.");
+        flash()->success("Created !", "Your banner has been created.");
 
         //redirect
         return back();
@@ -53,11 +60,24 @@ class BannersController extends Controller
      * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function show($zip,$street)
+    public function show($zip, $street)
     {
-        $banner = Banner::locatedAt($zip,$street)->first();
+        $banner = Banner::locatedAt($zip, $street);
+        return view('banners.show', compact('banner'));
+    }
 
-return view('banners.show',compact('banner'));
+    public function addPhotos($zip, $street, Request $request)
+    {
+        $this->validate($request,
+            [
+                'photo' => 'required|mimes:jpg,jpeg,png,bmp'
+            ]);
+
+
+        $photo = Photo::formFrom($request->file('photo'));
+
+        Banner::locatedAt($zip, $street)->addPhoto($photo);
+
     }
 
     /**

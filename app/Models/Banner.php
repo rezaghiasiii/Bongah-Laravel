@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Banner extends Model
 {
@@ -17,11 +16,17 @@ class Banner extends Model
         return $this->hasMany(Photo::class);
     }
 
-    public function scopeLocatedAt($query,$zip,$street)
+    public static function locatedAt($zip,$street)
     {
         $street = str_replace('-',' ', $street);
-        return $query->where(compact('zip','street'));
+        return static::where(compact('zip','street'))->first();
     }
+
+    public function addPhoto(Photo $photo)
+    {
+        return $this->photos()->save($photo);
+    }
+
 
     public function getPriceAttribute($price)
     {
