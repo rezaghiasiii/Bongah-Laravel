@@ -17,10 +17,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        User::factory(10)->create();
-        Banner::factory(10)->create()->each(function($banner) {
-            $banner->photos()->saveMany(
-                Photo::factory(rand(1,5))->make());
+        User::factory(10)->create()->each(function ($user){
+            $user->banners()->saveMany(
+                Banner::factory(rand(1,5))->make()
+            );
         });
     }
 }

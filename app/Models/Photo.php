@@ -15,7 +15,7 @@ class Photo extends Model
 
     protected $fillable = ['path'];
 
-    protected $baseDir = 'banners_photo/photo';
+    protected string $baseDir = 'banners_photo/photo';
 
     public function banners()
     {
@@ -23,7 +23,7 @@ class Photo extends Model
     }
 
 
-    public static function formFrom(array|UploadedFile|null $file)
+    public static function formFrom(UploadedFile $file): static
     {
         $photo = new static;
 

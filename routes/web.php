@@ -18,9 +18,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-require __DIR__.'/auth.php';
-
 Route::resource('banners', BannersController::class);
 
 Route::get('{zip}/{street}', [BannersController::class,'show']);
 Route::post('{zip}/{street}/photos', [BannersController::class,'addPhotos'])->name('store_photo_path');
+
+require __DIR__.'/auth.php';

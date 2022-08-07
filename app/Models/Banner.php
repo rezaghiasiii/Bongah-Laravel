@@ -37,4 +37,14 @@ class Banner extends Model
     {
         return nl2br($description);
     }
+
+    public function users()
+    {
+       return $this->belongsTo(User::class);
+    }
+
+    public function ownedBy(User $user)
+    {
+     return $this->user_id == $user->id;
+    }
 }

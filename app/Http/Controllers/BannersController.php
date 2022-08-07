@@ -2,15 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Flash;
 use App\Http\Requests\BannerRequest;
-use App\Http\Utilities\Country;
 use App\Models\Banner;
 use App\Models\Photo;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class BannersController extends Controller
 {
+//    use AuthorizesUsers;
 
     public function __construct()
     {
@@ -20,9 +25,9 @@ class BannersController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
-    public function index()
+    public function index(): Response
     {
         return view('dashboard');
     }
@@ -30,9 +35,9 @@ class BannersController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
-    public function create()
+    public function create(): Response
     {
         return view('banners.create');
     }
@@ -41,12 +46,13 @@ class BannersController extends Controller
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
-    public function store(BannerRequest $request)
+    public function store(BannerRequest $request): Response
     {
+
         //store
-        Banner::create($request->all());
+        auth()->user()->banners()->create($request->all());
 
         flash()->success("Created !", "Your banner has been created.");
 
@@ -58,33 +64,41 @@ class BannersController extends Controller
      * Display the specified resource.
      *
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return Application|Factory|View
      */
-    public function show($zip, $street)
+    public function show($zip, $street): View|Factory|Application
     {
         $banner = Banner::locatedAt($zip, $street);
         return view('banners.show', compact('banner'));
     }
 
-    public function addPhotos($zip, $street, Request $request)
+    /**
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function addPhotos($zip, $street, Request $request): Response|Application|RedirectResponse|ResponseFactory
     {
+
         $this->validate($request,
             [
                 'photo' => 'required|mimes:jpg,jpeg,png,bmp'
             ]);
 
-
         $photo = Photo::formFrom($request->file('photo'));
 
-        Banner::locatedAt($zip, $street)->addPhoto($photo);
+        //GUARD
+        if (!$this->userCreatedBanner($request)) {
+            return $this->unAuthorized($request);
+        }
 
+        return Banner::locatedAt($zip, $street)->addPhoto($photo);
     }
+
 
     /**
      * Show the form for editing the specified resource.
      *
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function edit($id)
     {
@@ -96,7 +110,7 @@ class BannersController extends Controller
      *
      * @param \Illuminate\Http\Request $request
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function update(Request $request, $id)
     {
@@ -107,10 +121,12 @@ class BannersController extends Controller
      * Remove the specified resource from storage.
      *
      * @param int $id
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function destroy($id)
     {
         //
     }
+
+
 }
