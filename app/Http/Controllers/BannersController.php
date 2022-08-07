@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\BannerRequest;
+use App\Http\Requests\ChangeBannerRequest;
 use App\Models\Banner;
 use App\Models\Photo;
 use Illuminate\Contracts\Foundation\Application;
@@ -75,20 +76,9 @@ class BannersController extends Controller
     /**
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function addPhotos($zip, $street, Request $request): Response|Application|RedirectResponse|ResponseFactory
+    public function addPhotos($zip, $street,ChangeBannerRequest $request): Response|Application|RedirectResponse|ResponseFactory
     {
-
-        $this->validate($request,
-            [
-                'photo' => 'required|mimes:jpg,jpeg,png,bmp'
-            ]);
-
         $photo = Photo::formFrom($request->file('photo'));
-
-        //GUARD
-        if (!$this->userCreatedBanner($request)) {
-            return $this->unAuthorized($request);
-        }
 
         return Banner::locatedAt($zip, $street)->addPhoto($photo);
     }
