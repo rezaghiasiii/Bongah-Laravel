@@ -23,33 +23,18 @@ class BannersController extends Controller
         $this->middleware('auth')->except('show');
     }
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return Response
-     */
-    public function index(): Response
+    public function index()
     {
-        return view('dashboard');
+        $banners = Banner::all();
+        return view('dashboard',compact('banners'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return Response
-     */
-    public function create(): Response
+    public function create()
     {
         return view('banners.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return Response
-     */
-    public function store(BannerRequest $request): Response
+    public function store(BannerRequest $request)
     {
 
         //store
@@ -61,58 +46,32 @@ class BannersController extends Controller
         return back();
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return Application|Factory|View
-     */
-    public function show($zip, $street): View|Factory|Application
+
+    public function show($id)
     {
-        $banner = Banner::locatedAt($zip, $street);
+        $banner = Banner::findOrFail($id);
+
         return view('banners.show', compact('banner'));
     }
 
-    /**
-     * @throws \Illuminate\Validation\ValidationException
-     */
-    public function addPhotos($zip, $street,ChangeBannerRequest $request): Response|Application|RedirectResponse|ResponseFactory
+    public function addPhotos($zip, $street,ChangeBannerRequest $request)
     {
         $photo = Photo::formFrom($request->file('photo'));
 
         return Banner::locatedAt($zip, $street)->addPhoto($photo);
     }
 
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param int $id
-     * @return Response
-     */
     public function edit($id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
-     * @return Response
-     */
+
     public function update(Request $request, $id)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     * @return Response
-     */
     public function destroy($id)
     {
         //

@@ -12,17 +12,17 @@
                     {!! $banner->description !!}
                 </p>
             </div>
-            @if(Auth::check())
+            @if(auth()->check() && auth()->user()->owns($banner))
                 <hr>
 
-                <div class="px-6 pt-4 pb-2">
-                    <h2 class="text-center font-bold">Add Your Photos</h2>
-                    <form id="addPhotosForm" class="dropzone"
-                          action="{{route('store_photo_path', [$banner->zip,$banner->street])}}"
-                          method="POST" enctype="multipart/form-data">
-                        {!! csrf_field() !!}
-                    </form>
-                </div>
+{{--                <div class="px-6 pt-4 pb-2">--}}
+{{--                    <h2 class="text-center font-bold">Add Your Photos</h2>--}}
+{{--                    <form id="addPhotosForm" class="dropzone"--}}
+{{--                          action="{{route('store_photo_path', [$banner->zip,$banner->street])}}"--}}
+{{--                          method="POST" enctype="multipart/form-data">--}}
+{{--                        {!! csrf_field() !!}--}}
+{{--                    </form>--}}
+{{--                </div>--}}
             @endif
         </div>
 
